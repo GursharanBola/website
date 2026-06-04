@@ -54,12 +54,10 @@
 
     <script>
         let currentIndex = 0;
-        // document.querySelectorAll automatically counts how many images are actually listed above
         const images = document.querySelectorAll('img');
 
         function showNextImage() {
-            if (images.length === 0) return; // Safety check
-            
+            if (images.length === 0) return;
             images[currentIndex].classList.remove('active');
             currentIndex = (currentIndex + 1) % images.length;
             images[currentIndex].classList.add('active');
