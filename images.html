@@ -30,9 +30,8 @@
             opacity: 0;
             transition: opacity 0.4s ease-in-out;
             pointer-events: none;
-            /* Added border property below */
             border: 2px solid #000;
-            box-sizing: border-box; /* Ensures border is included in image dimensions */
+            box-sizing: border-box; 
         }
 
         img.active {
@@ -55,13 +54,14 @@
 
     <script>
         let currentIndex = 0;
+        // document.querySelectorAll automatically counts how many images are actually listed above
         const images = document.querySelectorAll('img');
 
         function showNextImage() {
+            if (images.length === 0) return; // Safety check
+            
             images[currentIndex].classList.remove('active');
-
             currentIndex = (currentIndex + 1) % images.length;
-
             images[currentIndex].classList.add('active');
         }
     </script>
