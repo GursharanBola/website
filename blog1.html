@@ -71,10 +71,10 @@
 
     <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">lfsr_step:
     andi    t0, a0, 1
-    srli    a0, a0, 1                           _  /=\
-    beqz    t0, done                           /
-    li      t1, 0xB400        WE ARE SPIDERS ----           /=\
-    xor     a0, a0, t1                         \_    /=\
+    srli    a0, a0, 1                             /=\
+    beqz    t0, done
+    li      t1, 0xB400                   /=\
+    xor     a0, a0, t1                           /=\
 done:
     ret</code></pre>
 
@@ -91,17 +91,17 @@ done:
     mv      t4, s0
     li      t0, 1
     li      t1, 3
-inner:                                    TWEET
-    andi    t3, t4, 1                        \       /__-
-    beqz    t3, 1f                            \_   __ . \
-    mul     t0, t0, t1                               \   \  /
-    remu    t0, t0, t2                                \___\/
-1:  mul     t1, t1, t1                                  ||
-    remu    t1, t1, t2                                 ----
-    srli    t4, t4, 1                                  |   \
-    bnez    t4, inner                                  |    \
-    andi    t0, t0, 1                                  |     \
-    beqz    t0, 2f                                   ^ ^ ^ ^ ^ ^ ^ ^ ^
+inner:
+    andi    t3, t4, 1                             /__-
+    beqz    t3, 1f                              __ . \
+    mul     t0, t0, t1                            \   \  /
+    remu    t0, t0, t2                             \___\/
+1:  mul     t1, t1, t1                               ||
+    remu    t1, t1, t2                              ----
+    srli    t4, t4, 1                               |   \
+    bnez    t4, inner                               |    \
+    andi    t0, t0, 1                               |     \
+    beqz    t0, 2f                             ^ ^ ^ ^ ^ ^ ^ ^ ^
     addi    s2, s2, 1
 2:  addi    s0, s0, 1
     blt     s0, s1, outer</code></pre>
@@ -123,9 +123,9 @@ Let's now consider a more simple example:
     andi    t1, t0, 15
     bnez    t1, 1f
     addi    t2, t2, 1
-1:  andi    t1, t0, 1
-    beqz    t1, 2f
-    addi    t2, t2, 1
+1:  andi    t1, t0, 1           ==          .---.
+    beqz    t1, 2f                 ==    __/_o7 _\__
+    addi    t2, t2, 1           ==      (___________)
 2:  addi    t0, t0, 1
     andi    t1, t0, 7
     bnez    t1, loop
@@ -163,7 +163,7 @@ Notice that near by branches inform us about other branches, branch instructions
   substring of length n of the global branch history is unique.
 </p>
 <p>
-  In our case n=3:
+  In our case $n=3$:
 </p>
 <p>
   \[
@@ -172,13 +172,14 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 
 <p>
-  If we use n=3 and map these three 3 sets to states $\{T, NT, NT, T, T, NT\}$ in order, we can predict with 100% accuracy in steady state!
+  If we use $n=3$ and map these three 3 sets to states $\{T, NT, NT, T, T, NT\}$ in order, we can predict with 100% accuracy in steady state!
 
   This function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
 
   This scheme may also lets us predict with 100% accuracy any program where the global branch history pattern has unique contigious substrings of size 3. Strange
   requirement? Maybe. But its a win if you ask me!
-
+</p>
+<p>
   From this exercise the function that we are using to get predictions is also important not only the randomness of a program.
 </p>
 
@@ -186,11 +187,13 @@ Notice that near by branches inform us about other branches, branch instructions
   Now that we have some intuition for the problem lets begin to formalize this intuition.
   It might be useful to think about this problem in terms of something called a "working set." In memory caching this is the set of memory addresses a certain program
   needs in order to execute it's functionality.
-
+</p>
+<p>
   An analagous working set for branch prediction are the all the possible states a certain number of branch instructions are allowed to take on.
   The size of this set is proportional to the error we are willing to accept, how predictable a certain bit of code is, number of branch instructions
   we are trying to predict simultaniously, and the function we are using to generate predictions.
-
+</p>
+<p>
   From this formalization we can get an approximate about of memory we should use for these predictions. We can say that we should size the memory such that it smaller
   than some percent $\epsilon$ of all sets we will see. Where $\epsilon$ is small.
 </p>
