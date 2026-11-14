@@ -123,13 +123,13 @@ Let's now consider a more simple example:
     andi    t1, t0, 15
     bnez    t1, 1f
     addi    t2, t2, 1
-1:  andi    t1, t0, 1           ==          .---.
-    beqz    t1, 2f                 ==    __/_o7 _\__
-    addi    t2, t2, 1           ==      (___________)
+1:  andi    t1, t0, 1             ==          .---.
+    beqz    t1, 2f                   ==    __/_:o _\__
+    addi    t2, t2, 1             ==      (___________)
 2:  addi    t0, t0, 1
-    andi    t1, t0, 7
-    bnez    t1, loop
-    blt     t0, a1, loop
+    andi    t1, t0, 7                                         ==  .---.
+    bnez    t1, loop                               ==          __/_o7 _\__
+    blt     t0, a1, loop                                 ==   (___________)
 </code></pre>
 
 <p>
