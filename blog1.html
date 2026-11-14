@@ -71,10 +71,10 @@
 
     <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">lfsr_step:
     andi    t0, a0, 1
-    srli    a0, a0, 1                             /=\
+    srli    a0, a0, 1                                /=\
     beqz    t0, done
-    li      t1, 0xB400                   /=\
-    xor     a0, a0, t1                           /=\
+    li      t1, 0xB400                      /=\
+    xor     a0, a0, t1                              /=\
 done:
     ret</code></pre>
 
