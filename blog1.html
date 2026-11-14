@@ -71,12 +71,13 @@
 
     <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">lfsr_step:
     andi    t0, a0, 1
-    srli    a0, a0, 1                                /=\
-    beqz    t0, done
-    li      t1, 0xB400                      /=\
-    xor     a0, a0, t1                              /=\
-done:
-    ret</code></pre>
+    srli    a0, a0, 1   ᘛ⁐̤ᕐᐷ
+    beqz    t0, done                            C·>
+    li      t1, 0xB400                         \( )
+    xor     a0, a0, t1                          ` `
+done:                         ᘛ⁐̤ᕐᐷ
+    ret
+</code></pre>
 
   <p>
     This is the RISC-V Assembly for a linear feedback shift register (LFSR), a way to generate psuedo random numbers. We can think of the branch instruction
@@ -173,10 +174,11 @@ Notice that near by branches inform us about other branches, branch instructions
 
 <p>
   If we use $n=3$ and map these six sets to states $\{T, NT, NT, T, T, NT\}$ in order, we can predict with 100% accuracy in steady state!
-
+</p>
+<p>
   This function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
 
-  This scheme may also lets us predict with 100% accuracy any program where the global branch history pattern has unique contigious substrings of size 3. Strange
+  This scheme may also lets us predict with 100% accuracy any program where the global branch history pattern has unique contigious substrings of size three. Strange
   requirement? Maybe. But its a win if you ask me!
 </p>
 <p>
