@@ -19,6 +19,9 @@
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
 
+    <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">
+    <script src="https://tikzjax.com/v1/tikzjax.js"></script>
+
     <style>
         body {
             font-family: "Times New Roman", Times, serif;
@@ -174,16 +177,16 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 <p>
   We can use these six sets to states and map them to $\{T, NT, NT, T, T, NT\}$ in order. If we see a state where our previous three bits of history take on a certain
-  pattern, we can consult our table for a prediction. Thus, for the cost of a global shift register on chip, we can learn
+  pattern, we can consult our function for a prediction. Thus, for the cost of a global shift register on chip, we can learn
   can learn and  predict the pattern with great accuracy in steady state.
 </p>
 <p>
-  Why do this pattern history? Well it is simple... it's just a table we have to memorize of size $2^n$. But maybe we can try to just just learn the longest pattern
+  Why do this pattern history? Well it is simple... it's just a table we have to memorize a table of size $2^n$. But maybe we can try to just just learn the longest pattern
   in the data that we have currently seen and predict according to that. This is not a bad thought, the algorithm to do this is called Ukkonen's algorithm it's hard to
   implement in hardware... and anyway, this is a good enough approximation for large branch histories n.
 </p>
 <p>
-  This function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
+  Notice this function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
 
   This scheme may also lets us predict with 100% accuracy any program where the global branch history pattern has unique contigious substrings of size three. Strange
   requirement? Maybe. But its a win if you ask me!
@@ -192,6 +195,29 @@ Notice that near by branches inform us about other branches, branch instructions
   From this exercise the function that we are using to get predictions is also important not only the randomness of a program.
 </p>
 
+<p>
+  I think it might be useful to mention that people do actually implement storing the last thing a branch instruction resolved to but with a caveat. People will use what is called a
+  2-bit bimodal counter for each branch instruction to predict it's next behavior. This is better since it avoids pathological cases like the pattern $T, NT, T, NT$. These are modeled as
+  finite state machines that look like:
+</p>
+<script type="text/tikz">
+\usetikzlibrary{automata,positioning}
+\begin{tikzpicture}[->,>=stealth,node distance=3cm,every state/.style={minimum size=1.2cm}]
+\node[state] (s0) {00};
+\node[state,right of=s0] (s1) {01};
+\node[state,right of=s1] (s2) {10};
+\node[state,right of=s2] (s3) {11};
+\path
+(s0) edge[loop left] node{0/0} (s0)
+(s0) edge[bend left] node[above]{1/0} (s1)
+(s1) edge[bend left] node[below]{0/0} (s0)
+(s1) edge[bend left] node[above]{1/0} (s2)
+(s2) edge[bend left] node[below]{0/1} (s1)
+(s2) edge[bend left] node[above]{1/1} (s3)
+(s3) edge[bend left] node[below]{0/1} (s2)
+(s3) edge[loop right] node{1/1} (s3);
+\end{tikzpicture}
+</script>
 <p>
   Now that we have some intuition for the problem lets begin to formalize this intuition.
   It might be useful to think about this problem in terms of something called a "working set." In memory caching this is the set of memory addresses a certain program
