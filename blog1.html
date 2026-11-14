@@ -90,10 +90,10 @@ done:                                             ||--------w|
 
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">outer:
     mv      t4, s0
-    li      t0, 1
-    li      t1, 3
-inner:
-    andi    t3, t4, 1
+    li      t0, 1                        ,===,
+    li      t1, 3                       (_____)
+inner:                                                         ,===,
+    andi    t3, t4, 1                                         (_____)
     beqz    t3, 1f
     mul     t0, t0, t1
     remu    t0, t0, t2                            /__-
