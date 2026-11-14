@@ -55,42 +55,47 @@
 
 <body>
     <h1>
-    <span>Branch Prediction</span>
+    <span>Branching</span>
     <a href="blog2.html" class="next-link">next&gt;</a>
     </h1>
     <p>
-      I wanted to talk about some basic
+      I want to talk about some basic branch prediction schemes but first wanted to begin with two examples:
     </p>
 
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
-acquire:
-    li      t2, 0
-retry:
-    lr.w    t0, (a0)
-    bnez    t0, busy
-    li      t1, 1
-    sc.w    t3, t1, (a0)
-    bnez    t3, contended
-    fence   rw, rw
-    li      a0, 1
-    ret
-contended:
-    addi    t2, t2, 1
-busy:
-    addi    t2, t2, 1
-    bge     t2, a1, giveup
-    andi    t4, t2, 1
-    beqz    t4, retry
-    fence
-    j       retry
-giveup:
-    li      a0, 0
-    ret
-release:
-    fence   rw, rw
-    sw      zero, 0(a0)
+lfsr_step:
+    andi    t0, a0, 1
+    srli    a0, a0, 1
+    beqz    t0, done
+    li      t1, 0xB400
+    xor     a0, a0, t1
+done:
     ret
 </code></pre>
+
+  <p>
+    This is the RISC-V Assembly for a linear feedback shift register, a way to generate psuedo random numbers. We would expect the branch
+    instruction to be taken roughly 1/2 of the time, but in a way that is randomized. It is clear to see here the best we can do is
+    1/2.
+  </p>
+<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
+loop:
+    andi    t1, t0, 15
+    bnez    t1, 1f
+    addi    t2, t2, 1
+1:  andi    t1, t0, 1
+    beqz    t1, 2f
+    addi    t2, t2, 1
+2:  addi    t0, t0, 1
+    andi    t1, t0, 7
+    bnez    t1, loop
+    blt     t0, a1, loop
+</code></pre>
+
+<p>
+  Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) in program order
+  inform us about other branches, local histories of each branch tell us the exact behaviors, and there are patterns in the way that certain branches resolve (oscillating).
+</p>
 
 </body>
 </html>
