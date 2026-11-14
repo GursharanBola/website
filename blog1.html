@@ -87,8 +87,7 @@ done:
     If you want a simpler problem then maybe prove it for a PRNG that looks like:
   </p>
 
-<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
-outer:
+<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">outer:
     mv      t4, s0
     li      t0, 1
     li      t1, 3
@@ -105,8 +104,7 @@ inner:                                    TWEET
     beqz    t0, 2f                                   ^ ^ ^ ^ ^ ^ ^ ^ ^
     addi    s2, s2, 1
 2:  addi    s0, s0, 1
-    blt     s0, s1, outer
-</code></pre>
+    blt     s0, s1, outer</code></pre>
 
 <p>
   It seems if we want to predict branches in these methods to a high accuracy we are at a loss. We cannot do better then randomly guessing or just always guessing
@@ -114,8 +112,7 @@ inner:                                    TWEET
   attempt. Although this strategy sounds useless, it is actually quite useful just maybe not in this example.
 </p>
 
-<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
-loop:
+<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">loop:
     andi    t1, t0, 15
     bnez    t1, 1f
     addi    t2, t2, 1
@@ -125,8 +122,7 @@ loop:
 2:  addi    t0, t0, 1
     andi    t1, t0, 7
     bnez    t1, loop
-    blt     t0, a1, loop
-</code></pre>
+    blt     t0, a1, loop</code></pre>
 
 <p>
 Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, local histories of each branch tell us the exact behaviors, and some of the branches here exibit a pattern, specifically here we have a taken, not-taken pattern. It seems there is a lot more here we can work with, so let's try some methods now!
@@ -137,7 +133,8 @@ Now this code is more predictable and is a function of the loop index. Notice th
   enumerate a lot more state and memorize it, in simpler states we can achieve some sort of compression. You might be familiar with working sets being used in the
   context of caching, but here it also makes sense to think about a "working set" as all possible states our set of branches can take. We can say that this set's size
   is proportional to the error we are willing to accept and how predictable a certain bit of code is.
-
 <p>
   We know most code exhibits the patterns I described above so let's begin with a good branch predictor and maybe something that you haven't seen before. Gshare.
 </p>
+</body>
+</html>
