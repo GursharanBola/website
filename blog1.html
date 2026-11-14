@@ -153,7 +153,7 @@ Notice that near by branches inform us about other branches, branch instructions
   \]
 
   Maybe we begin with the strategy we last talked about which is storing the last state of a certain instruction and using that later to predict. This would work
-  but quickly falls apart if the number of instructions that follow this pattern are very large (imagine sets of repeated sets of
+  but quickly falls apart if the number of instructions that follow this pattern are very large (imagine repeated sets of
   6 branch instructions that exhibit the same pattern). So it seems we need a more clever strategy in this specific case.
 </p>
 
@@ -163,19 +163,27 @@ Notice that near by branches inform us about other branches, branch instructions
   f : \{0,1\}^n \rightarrow \{0,1\}
   \]
   where n is the number of bits needed to represent the past n branches and the output is our prediction. We want n to just large enough such that for any contigious
-  substring of length n of the global branch history is unique.
+  substring of length n of the global branch history is unique. Why? Because we want this function to be one to one between pattern and branch instruction.
 </p>
 <p>
-  In our case $n=3$:
+  In our case $n=3$ and the associated subsequences look like:
 </p>
 <p>
   \[
   \{T, NT, NT\}, \{NT, NT, T\}, \{NT, T, T\}, \{T, T, NT\}, \{T, NT, T\}, \{NT, T, NT\}
   \]
 </p>
-
 <p>
-  If we use $n=3$ and map these six sets to states $\{T, NT, NT, T, T, NT\}$ in order, we can predict with 100% accuracy in steady state!
+  If we use $n=3$ and map these six sets to states $\{T, NT, NT, T, T, NT\}$ in order. If we store a shift register of these patterns and their associated mappings, we
+  can learn the pattern and predict the pattern with great accuracy in steady state.
+</p>
+<p>
+  Why do this pattern history? Well it is simple... it's just a table we have to memorize of size $2^n$. But maybe we can try to just just learn the longest pattern
+  in the data that we have currently seen and predict according to that.
+</p>
+<p>
+  This is not a bad thought, the algorithm to do this is called Ukkonen's algorithm it's hard to implement in hardware... and anyway, this is a good enough approximation
+  for large branch histories n.
 </p>
 <p>
   This function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
