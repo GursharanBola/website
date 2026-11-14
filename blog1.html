@@ -137,37 +137,49 @@ Now this code is more predictable and is a function of the loop index. Notice th
 <p>
   In the states we where there are patterns we can compress this search space down and enumerate less. We can deal with these patterns in different ways for example
   if we have a global pattern of branch histories that repeats like this:
+
   \[
   T, NT, NT, T, T, NT
   \]
-  We may want to consider the local histories of each branch instruction making the number of states we have to enumerate grow proportionally to the number of branch
-  instructions.
-</p>
-<p>
-  We may conisder a more clever and consider the minimum number of previous branch histories that we have to keep to ensure that we can memorize the entire pattern
-</p>
 
-<p>
-  In this case that would be 3 history bits:
+  To solve this we may want to enumerate all the branches and their states that are a part of this pattern. This quickly falls apart if the number of branches that
+  follow this pattern are very large say $10^{30}$. We may conisder a more clever approach where we try to learn the function:
   \[
-  \{T, NT, NT\}, \{NT, NT, T\}, \{NT, T, T\}, \{T, T, NT\}
+  f : \{0,1\}^n \rightarrow \{0,1\}
+  \]
+  where n is the number of bits needed to represent the past n branches and the output is our prediction. We want n to just large enough such that for any contigious
+  substring of length n of the global branch history is unique. In our case n=3:
+</p>
+<p>
+  \[
+  \{T, NT, NT\}, \{NT, NT, T\}, \{NT, T, T\}, \{T, T, NT\}, \{T, NT, T\}, \{NT, T, NT\}
   \]
 </p>
 
 <p>
-  This would let us memorize the whole pattern and even if there where $10^30$ branch instructions we would not have to use too much memory. It also can learn any
-  pattern that has it so that all contigious substrings of length 3 are unique.
+  This lets us map each of these 6 sets to each of the 6 states in the global history, in steady state can predict this pattern with 100% accuracy. This function differs
+  from the one above since it scales with the length of the global history pattern and how complex (or not) the pattern is.
+
+  This scheme may also lets us predict with 100% accuracy any program where the global branch history pattern has unique contigious substrings of size 3. Strange
+  requirement? Maybe. But its a win if you ask me!
+
+  From this exercise the function that we are using to get predictions is also important not only the randomness of a program.
 </p>
 
 <p>
-  More formally the working set size is proportional to the error we are willing to accept, how predictable a certain bit of code is, and number of branch instructions
-  we are trying to predict simultaniously. From this we can more formally say that we should size the memory that we will use for prediction roughly to the size of the
-  set that is larger than some percent $\epsilon$ of all sets we will see.
+  It might be useful to think about this problem in terms of something called a "working set." In memory caching this is the set of memory addresses a certain program
+  needs in order to execute it's functionality.
+
+  An analagous working set for branch prediction are the all the possible states a certain number of branch instructions are allowed to take on.
+  The size of this set is proportional to the error we are willing to accept, how predictable a certain bit of code is, number of branch instructions
+  we are trying to predict simultaniously, and the function we are using to generate predictions.
+
+  From this formalization we can get an approximate about of memory we should use for these predictions. We can say that we should size the memory such that it smaller
+  than some percent $\epsilon$ of all sets we will see. Where $\epsilon$ is small.
 </p>
 
 <p>
-  We know most code that people write exhibits the patterns I described above so let's begin with a good branch predictor and
-  maybe something that you haven't seen before. Gshare.
+  With all of this said lets begin with some pretty good simple branch predictors. Gshare.
 </p>
 
 </body>
