@@ -202,7 +202,7 @@ Notice that near by branches inform us about other branches, branch instructions
 <p>
   A two bit counter can be illustrated with the following FSM. We predict not taken if we are in the bottom two states, and taken otherwise.
 </p>
-<img src="bimodal.png" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
+<img src="bimodal.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
   This is better since it avoids pathological cases like the pattern $T, NT, T, NT$ that result in 0% of instructions predicted correctly.
   Obviously there still exists pathaological cases for n-bit counters, but the patterns that are pathalogical get more and arbirary for larger n. The downside of a
