@@ -133,12 +133,13 @@ Let's now consider a more simple example:
 </code></pre>
 
 <p>
-Notice that in space (near by branches) inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here! We can even think about some basic strategy here. Maybe we can compress the behaviors of certain branches down to either being a "always taker" or a "never taker"; maybe consider the history of a previous branch instruction and guess that.
+Notice that near by branches inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here! We can even think about some basic strategy here. Maybe we can compress the behaviors of certain branches down to either being a "always taker" or a "never taker"; maybe consider the history of a previous branch instruction and guess that.
 </p>
 
 <p>
-  So it seems in programs we where there are patterns we can compress the space of all branch possiblities down and retain performance. But is there something other
-  randomness? Does the way that we deal with these patterns impact how much we have to store? I don't know! Let's try an example:
+  So it seems in programs where there are patterns we can compress the space of all branch possiblities down and retain performance. But is there something other than
+  the randomness the influences how much memory that we have to use to predict accurately? Does the way that we deal with these patterns impact how much we have to
+  store? I don't know! Let's try an example:
 </p>
 
 <p>
@@ -148,9 +149,9 @@ Notice that in space (near by branches) inform us about other branches, branch i
   T, NT, NT, T, T, NT
   \]
 
-  To solve this we may want to enumerate all the branches and store previous states and replay them, after all this pattern will always happen.
-  This quickly falls apart if the number of branches that
-  follow this pattern are very large say $10^{30}$. So it seems we need a more clever approach!
+  Maybe we begin with the strategy we last talked about which is storing the last state of a certain instruction and using that later to predict. This would work
+  but quickly falls apart if the number of instructions that follow this pattern are very large (imagine sets of repeated sets of
+  6 branch instructions that exhibit the same pattern). So it seems we need a more clever strategy in this specific case.
 </p>
 
 <p>
