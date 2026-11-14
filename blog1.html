@@ -125,16 +125,50 @@ inner:                                    TWEET
     blt     t0, a1, loop</code></pre>
 
 <p>
-Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, local histories of each branch tell us the exact behaviors, and some of the branches here exibit a pattern, specifically here we have a taken, not-taken pattern. It seems there is a lot more here we can work with, so let's try some methods now!
+Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here which we will formalize later.
 </p>
 
 <p>
-  We can maybe think of branch history tables of having a varying size of a "working set". In randomized cases we have a very large working set that is we have to
-  enumerate a lot more state and memorize it, in simpler states we can achieve some sort of compression. You might be familiar with working sets being used in the
-  context of caching, but here it also makes sense to think about a "working set" as all possible states our set of branches can take. We can say that this set's size
-  is proportional to the error we are willing to accept and how predictable a certain bit of code is.
-<p>
-  We know most code exhibits the patterns I described above so let's begin with a good branch predictor and maybe something that you haven't seen before. Gshare.
+  We are able to think about branching in terms of "working sets", which for us going to be the set of all possible states our branches can take.
+  In randomized cases we have a very large working set since we have to memorize a lot more to reach a 100% prediction rate. In the case whether or not a branch's is
+  taken is truely random we need infinte memory!
 </p>
+
+<p>
+  In the states we where there are patterns we can compress this search space down and enumerate less. We can deal with these patterns in different ways for example
+  if we have a global pattern of branch histories that repeats like this:
+  \[
+  T NT NT T T NT
+  \]
+  We may want to consider the local histories of each branch instruction making the number of states we have to enumerate grow proportionally to the number of branch
+  instructions.
+</p>
+<p>
+  We may conisder a more clever and consider the minimum number of previous branch histories that we have to keep to ensure that we can memorize the entire pattern
+</p>
+
+<p>
+  In this case that would be 3 history bits:
+  \[
+  {T, NT, NT}, {NT, NT, T}, {NT, T, T}, {T, T, NT}
+  \]
+</p>
+
+<p>
+  This would let us memorize the whole pattern and even if there where $10^30$ branch instructions we would not have to use too much memory. It also can learn any
+  pattern that has it so that all contigious substrings of length 3 are unique.
+</p>
+
+<p>
+  More formally the working set size is proportional to the error we are willing to accept, how predictable a certain bit of code is, and number of branch instructions
+  we are trying to predict simultaniously. From this we can more formally say that we should size the memory that we will use for prediction roughly to the size of the
+  set that is larger than some percent $\epsilon$ of all sets we will see.
+</p>
+
+<p>
+  We know most code that people write exhibits the patterns I described above so let's begin with a good branch predictor and
+  maybe something that you haven't seen before. Gshare.
+</p>
+
 </body>
 </html>
