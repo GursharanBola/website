@@ -87,7 +87,8 @@ done:
     If you want a simpler problem then maybe prove it for a PRNG that looks like:
   </p>
 
-<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">outer:
+<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
+outer:
     mv      t4, s0
     li      t0, 1
     li      t1, 3
@@ -104,7 +105,8 @@ inner:                                    TWEET
     beqz    t0, 2f                                   ^ ^ ^ ^ ^ ^ ^ ^ ^
     addi    s2, s2, 1
 2:  addi    s0, s0, 1
-    blt     s0, s1, outer</code></pre>
+    blt     s0, s1, outer
+</code></pre>
 
 <p>
   It seems if we want to predict branches in these methods to a high accuracy we are at a loss. We cannot do better then randomly guessing or just always guessing
@@ -124,6 +126,7 @@ loop:
     andi    t1, t0, 7
     bnez    t1, loop
     blt     t0, a1, loop
+</code></pre>
 
 <p>
 Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, local histories of each branch tell us the exact behaviors, and some of the branches here exibit a pattern, specifically here we have a taken, not-taken pattern. It seems there is a lot more here we can work with, so let's try some methods now!
