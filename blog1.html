@@ -138,7 +138,7 @@ Now this code is more predictable and is a function of the loop index. Notice th
   In the states we where there are patterns we can compress this search space down and enumerate less. We can deal with these patterns in different ways for example
   if we have a global pattern of branch histories that repeats like this:
   \[
-  T NT NT T T NT
+  T, NT, NT, T, T, NT
   \]
   We may want to consider the local histories of each branch instruction making the number of states we have to enumerate grow proportionally to the number of branch
   instructions.
@@ -150,7 +150,7 @@ Now this code is more predictable and is a function of the loop index. Notice th
 <p>
   In this case that would be 3 history bits:
   \[
-  {T, NT, NT}, {NT, NT, T}, {NT, T, T}, {T, T, NT}
+  \{T, NT, NT\}, \{NT, NT, T\}, \{NT, T, T\}, \{T, T, NT\}
   \]
 </p>
 
