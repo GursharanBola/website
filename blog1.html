@@ -59,7 +59,38 @@
     <a href="blog2.html" class="next-link">next&gt;</a>
     </h1>
     <p>
-      Say that we have
+      I wanted to talk about some basic
     </p>
+
+<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
+acquire:
+    li      t2, 0
+retry:
+    lr.w    t0, (a0)
+    bnez    t0, busy
+    li      t1, 1
+    sc.w    t3, t1, (a0)
+    bnez    t3, contended
+    fence   rw, rw
+    li      a0, 1
+    ret
+contended:
+    addi    t2, t2, 1
+busy:
+    addi    t2, t2, 1
+    bge     t2, a1, giveup
+    andi    t4, t2, 1
+    beqz    t4, retry
+    fence
+    j       retry
+giveup:
+    li      a0, 0
+    ret
+release:
+    fence   rw, rw
+    sw      zero, 0(a0)
+    ret
+</code></pre>
+
 </body>
 </html>
