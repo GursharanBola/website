@@ -108,8 +108,15 @@ inner:                                    TWEET
 
 <p>
   It seems if we want to predict branches in these methods to a high accuracy we are at a loss. We cannot do better then randomly guessing or just always guessing
-  taken or not taken. This is actually not true. We can get 100% prediction and the strategy is very simple, enumerate all possible states and replay them on a 2nd
-  attempt. Although this strategy sounds useless, it is actually quite useful just maybe not in this example.
+  taken or not taken.
+</p>
+<p>
+  This is actually not true. We can get 100% prediction and the strategy is very simple. Enumerate all possible states and replay them on a 2nd
+  attempt. Although this strategy sounds unfeasable, especially when the state space is very large, it is actually the basis of most branch predictors today.
+</p>
+
+<p>
+Let's now consider a more simple example:
 </p>
 
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">loop:
@@ -122,14 +129,15 @@ inner:                                    TWEET
 2:  addi    t0, t0, 1
     andi    t1, t0, 7
     bnez    t1, loop
-    blt     t0, a1, loop</code></pre>
+    blt     t0, a1, loop
+</code></pre>
 
 <p>
-Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here! We can even think about some basic strategy here. Maybe we can compress the behaviors of certain branches down to either being a "always taker" or a "never taker", maybe consider the history of a previous branch instruction and guess that.
+Notice that in space (near by branches) inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here! We can even think about some basic strategy here. Maybe we can compress the behaviors of certain branches down to either being a "always taker" or a "never taker"; maybe consider the history of a previous branch instruction and guess that.
 </p>
 
 <p>
-  So it seems in the states we where there are patterns we can compress the space of all branch possiblities down and retain performance. But is there something other
+  So it seems in programs we where there are patterns we can compress the space of all branch possiblities down and retain performance. But is there something other
   randomness? Does the way that we deal with these patterns impact how much we have to store? I don't know! Let's try an example:
 </p>
 
@@ -146,12 +154,15 @@ Now this code is more predictable and is a function of the loop index. Notice th
 </p>
 
 <p>
-  Maybe lets try to leran the function:
+  Maybe lets try to learn the function:
   \[
   f : \{0,1\}^n \rightarrow \{0,1\}
   \]
   where n is the number of bits needed to represent the past n branches and the output is our prediction. We want n to just large enough such that for any contigious
-  substring of length n of the global branch history is unique. In our case n=3:
+  substring of length n of the global branch history is unique.
+</p>
+<p>
+  In our case n=3:
 </p>
 <p>
   \[
@@ -160,8 +171,9 @@ Now this code is more predictable and is a function of the loop index. Notice th
 </p>
 
 <p>
-  This lets us map each of these 6 sets to each of the 6 states in the global history, in steady state can predict this pattern with 100% accuracy. This function differs
-  from the one above since it scales with the length of the global history pattern and how complex (or not) the pattern is.
+  If we use n=3 and map these three 3 sets to states $\{T, NT, NT, T, T, NT\}$ in order, we can predict with 100% accuracy in steady state!
+
+  This function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
 
   This scheme may also lets us predict with 100% accuracy any program where the global branch history pattern has unique contigious substrings of size 3. Strange
   requirement? Maybe. But its a win if you ask me!
@@ -170,6 +182,7 @@ Now this code is more predictable and is a function of the loop index. Notice th
 </p>
 
 <p>
+  Now that we have some intuition for the problem lets begin to formalize this intuition.
   It might be useful to think about this problem in terms of something called a "working set." In memory caching this is the set of memory addresses a certain program
   needs in order to execute it's functionality.
 
