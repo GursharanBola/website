@@ -53,8 +53,24 @@
     </style>
 </head>
 
+<body>
+    <h1>
+        <span>Branch Prediction</span>
+        <a href="blog1.html" class="next-link">next&gt;</a>
+    </h1>
+    <span>Branch Prediction</span>
+    <p>
+      Branch prediction is when CPUs in hardware try to predict whether or not a branch instruction is taken or not taken to avoid pipeline stalls.
+    </p>
+    <p>
+      For the purposes of this discussion, the details of why branch predition is useful and how it is implemented is beside the point. Our sole objective right now
+      is to think about how code is written and abuse it's properties to yeild good prediction in "simple" ways.
+    </p>
+    <p>
+      Before we begin I want to begin with two simple examples:
+    </p>
 
-<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">lfsr_step:
+    <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">lfsr_step:
     andi    t0, a0, 1
     srli    a0, a0, 1                           _  /=\
     beqz    t0, done                           /
@@ -97,7 +113,18 @@ inner:                                    TWEET
 </p>
 
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">loop:
+loop:
     andi    t1, t0, 15
     bnez    t1, 1f
     addi    t2, t2, 1
-12 changes; before #3  2 seconds ago                                                                                                                                                           89,43         82%
+1:  andi    t1, t0, 1
+    beqz    t1, 2f
+    addi    t2, t2, 1
+2:  addi    t0, t0, 1
+    andi    t1, t0, 7
+    bnez    t1, loop
+    blt     t0, a1, loop
+
+<p>
+Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, local histories of each branch tell us the exact behaviors, and some of the branches here exibit a pattern, specifically here we have a taken, not-taken pattern. It seems there is a lot more here we can work with, so let's try some methods now!
+</p>
