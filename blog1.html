@@ -200,24 +200,7 @@ Notice that near by branches inform us about other branches, branch instructions
   2-bit bimodal counter for each branch instruction to predict it's next behavior. This is better since it avoids pathological cases like the pattern $T, NT, T, NT$. These are modeled as
   finite state machines that look like:
 </p>
-<script type="text/tikz">
-\usetikzlibrary{automata,positioning}
-\begin{tikzpicture}[->,>=stealth,node distance=3cm,every state/.style={minimum size=1.2cm}]
-\node[state] (s0) {00};
-\node[state,right of=s0] (s1) {01};
-\node[state,right of=s1] (s2) {10};
-\node[state,right of=s2] (s3) {11};
-\path
-(s0) edge[loop left] node{0/0} (s0)
-(s0) edge[bend left] node[above]{1/0} (s1)
-(s1) edge[bend left] node[below]{0/0} (s0)
-(s1) edge[bend left] node[above]{1/0} (s2)
-(s2) edge[bend left] node[below]{0/1} (s1)
-(s2) edge[bend left] node[above]{1/1} (s3)
-(s3) edge[bend left] node[below]{0/1} (s2)
-(s3) edge[loop right] node{1/1} (s3);
-\end{tikzpicture}
-</script>
+<img src="bimodal.png" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
   Now that we have some intuition for the problem lets begin to formalize this intuition.
   It might be useful to think about this problem in terms of something called a "working set." In memory caching this is the set of memory addresses a certain program
