@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photography</title>
+    <title>Branch Prediction</title>
 
     <script>
     MathJax = {
@@ -59,7 +59,9 @@
     <a href="blog2.html" class="next-link">next&gt;</a>
     </h1>
     <p>
-      I want to talk about some basic branch prediction schemes but first wanted to begin with two examples:
+      Branch prediction is when CPUs in hardware try to predict whether or not a branch instruction is taken or not taken to avoid pipeline stalls. For the purposes of this discussion, the details of why branch predition and why it is useful are not important for this discussion. This will mainly discuss a way to compose common ideas to make a predictor.
+
+      Before we begin I want to begin with two simple examples:
     </p>
 
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
@@ -74,10 +76,39 @@ done:
 </code></pre>
 
   <p>
-    This is the RISC-V Assembly for a linear feedback shift register, a way to generate psuedo random numbers. We would expect the branch
-    instruction to be taken roughly 1/2 of the time, but in a way that is randomized. It is clear to see here the best we can do is
-    1/2.
+    This is the RISC-V Assembly for a linear feedback shift register (LFSR), a way to generate psuedo random numbers. We can think of the branch instruction
+    as being "randomly" taken having roughly 1/2 probability of being taken. A side note is that the probability of this branch being taken is exactly
+    1/2 the proof is actually quite difficult from first principles... but take my word for it.
+
+    If you want a simpler problem then maybe prove it for a PRNG that looks like:
   </p>
+
+<pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
+outer:
+    mv      t4, s0
+    li      t0, 1
+    li      t1, 3
+inner:
+    andi    t3, t4, 1
+    beqz    t3, 1f
+    mul     t0, t0, t1
+    remu    t0, t0, t2
+1:  mul     t1, t1, t1
+    remu    t1, t1, t2
+    srli    t4, t4, 1
+    bnez    t4, inner
+    andi    t0, t0, 1
+    beqz    t0, 2f
+    addi    s2, s2, 1
+2:  addi    s0, s0, 1
+    blt     s0, s1, outer
+</code></pre>
+
+<p>
+  It seems if we want to predict branches in these methods to a high accuracy we are at a loss. We cannot do better then randomly guessing or just always guessing
+  taken or not taken.
+</p>
+
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">
 loop:
     andi    t1, t0, 15
@@ -93,8 +124,7 @@ loop:
 </code></pre>
 
 <p>
-  Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) in program order
-  inform us about other branches, local histories of each branch tell us the exact behaviors, and there are patterns in the way that certain branches resolve (oscillating).
+  Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, local histories of each branch tell us the exact behaviors, and some of the branches here exibit a pattern, specifically here we have a taken, not-taken pattern. It seems there is a lot more here we can work with, so let's try some methods now!
 </p>
 
 </body>
