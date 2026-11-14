@@ -196,11 +196,18 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 
 <p>
-  I think it might be useful to mention that people do actually implement storing the last thing a branch instruction resolved to but with a caveat. People will use what is called a
-  2-bit bimodal counter for each branch instruction to predict it's next behavior. This is better since it avoids pathological cases like the pattern $T, NT, T, NT$. These are modeled as
-  finite state machines that look like:
+  I think it might be useful to mention that people do actually implement storing the way a branch instruction last resolved to but with a caveat. People will use what
+  is called a 2-bit counter to predict a specific branch instructions.
+</p>
+<p>
+  An example of this counter can be illustrated with this finite state machine:
 </p>
 <img src="bimodal.png" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
+<p>
+  This is better since it avoids pathological cases like the pattern $T, NT, T, NT$ that result in 0% of instructions predicted correctly.
+  Obviously there still exists pathaological cases for n-bit counters, but the patterns that are pathalogical get more and arbirary for larger n. The downside of a
+  larger n is that it's harder to learn a new pattern if our branch pattern changes.
+</p>
 <p>
   Now that we have some intuition for the problem lets begin to formalize this intuition.
   It might be useful to think about this problem in terms of something called a "working set." In memory caching this is the set of memory addresses a certain program
