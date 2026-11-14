@@ -173,16 +173,14 @@ Notice that near by branches inform us about other branches, branch instructions
   \]
 </p>
 <p>
-  If we use $n=3$ and map these six sets to states $\{T, NT, NT, T, T, NT\}$ in order. If we store a shift register of these patterns and their associated mappings, we
-  can learn the pattern and predict the pattern with great accuracy in steady state.
+  We can use these six sets to states and map them to $\{T, NT, NT, T, T, NT\}$ in order. If we see a state where our previous three bits of history take on a certain
+  pattern, we can consult our table for a prediction. Thus, for the cost of a global shift register on chip, we can learn
+  can learn and  predict the pattern with great accuracy in steady state.
 </p>
 <p>
   Why do this pattern history? Well it is simple... it's just a table we have to memorize of size $2^n$. But maybe we can try to just just learn the longest pattern
-  in the data that we have currently seen and predict according to that.
-</p>
-<p>
-  This is not a bad thought, the algorithm to do this is called Ukkonen's algorithm it's hard to implement in hardware... and anyway, this is a good enough approximation
-  for large branch histories n.
+  in the data that we have currently seen and predict according to that. This is not a bad thought, the algorithm to do this is called Ukkonen's algorithm it's hard to
+  implement in hardware... and anyway, this is a good enough approximation for large branch histories n.
 </p>
 <p>
   This function differs from the one above since it only scales with the length of the global history pattern and how complex (or not) the pattern is.
