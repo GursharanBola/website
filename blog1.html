@@ -125,25 +125,28 @@ inner:                                    TWEET
     blt     t0, a1, loop</code></pre>
 
 <p>
-Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here which we will formalize later.
+Now this code is more predictable and is a function of the loop index. Notice that in space (near by branches) inform us about other branches, branch instructions often repeat, and some of the branches exibit patterns. It seems there is a lot more here we can work with here! We can even think about some basic strategy here. Maybe we can compress the behaviors of certain branches down to either being a "always taker" or a "never taker", maybe consider the history of a previous branch instruction and guess that.
 </p>
 
 <p>
-  We are able to think about branching in terms of "working sets", which for us going to be the set of all possible states our branches can take.
-  In randomized cases we have a very large working set since we have to memorize a lot more to reach a 100% prediction rate. In the case whether or not a branch's is
-  taken is truely random we need infinte memory!
+  So it seems in the states we where there are patterns we can compress the space of all branch possiblities down and retain performance. But is there something other
+  randomness? Does the way that we deal with these patterns impact how much we have to store? I don't know! Let's try an example:
 </p>
 
 <p>
-  In the states we where there are patterns we can compress this search space down and enumerate less. We can deal with these patterns in different ways for example
-  if we have a global pattern of branch histories that repeats like this:
+  Say we have a global pattern of branch histories that repeats like this:
 
   \[
   T, NT, NT, T, T, NT
   \]
 
-  To solve this we may want to enumerate all the branches and their states that are a part of this pattern. This quickly falls apart if the number of branches that
-  follow this pattern are very large say $10^{30}$. We may conisder a more clever approach where we try to learn the function:
+  To solve this we may want to enumerate all the branches and store previous states and replay them, after all this pattern will always happen.
+  This quickly falls apart if the number of branches that
+  follow this pattern are very large say $10^{30}$. So it seems we need a more clever approach!
+</p>
+
+<p>
+  Maybe lets try to leran the function:
   \[
   f : \{0,1\}^n \rightarrow \{0,1\}
   \]
