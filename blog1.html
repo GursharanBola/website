@@ -224,7 +224,26 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 
 <p>
-  With all of this said lets begin with some pretty good simple branch predictors. Gshare.
+  With all of this said lets begin with some pretty good simple branch predictor: Gshare. Gshare is simple, simply have a table of 2-bit counters, indexed by $\textbf{BranchIP} \xor \textbf{GBHR}$.
+</p>
+<p>
+  Why might this be a good idea? Well by having 2 bit counter we can avoid simple pathlogical branch patterns and ensure that we can learn the local histories of certain branches and predict using i
+  . We also take
+  into account spatial relationship among branches since we are performing by performing an XOR. Different patterns in the global history map us to different patterns on the table. If the global
+  where to not change, we will keep accessing the same indicies in memory and we learn a specific pattern.
+</p>
+<p>
+  Some obvious downsides is that say that a within a working set of branch instructions we may have multiple version of this branch in memory (potentially and pathlogically taking up the entire table).
+  So Gshare doesn't scale well at all high complexity randomized global branch histories.
+</p>
+<p>
+  I would like to introduce a scheme that I had thought of that aims to achieve a very high density in memory regardless of the complexity of the global branch history.
+</p>
+<p>
+  A one line discription of the algorithm would be:
+</p>
+<img src="xor_bht.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
+<p>
 </p>
 
 </body>
