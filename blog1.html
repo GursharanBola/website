@@ -224,25 +224,30 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 
 <p>
-  With all of this said lets begin with some pretty good simple branch predictor: Gshare. Gshare is simple, simply have a table of 2-bit counters, indexed by $\text{BranchIP} \oplus \text{GBHR}$.
+  With all of this said lets begin with some pretty good simple branch predictor: Gshare. GShare's premise is to have a have a table of 2-bit counters, indexed by $\text{BranchIP} \oplus \text{GBHR}$.
 </p>
 <p>
   Why might this be a good idea? Well by having 2 bit counter we can avoid simple pathlogical branch patterns and ensure that we can learn the local histories of certain branches.
-  We also take
-  into account spatial relationship among branches since we are performing by performing an XOR. Different patterns in the global history map us to different patterns on the table. If the global
-  where to not change, we will keep accessing the same indicies in memory and we learn a specific pattern.
+  By performing an XOR with te global branch history register we take into account spatial relationship among branches.
+  Take for example
+  if global pattern history where to not change, we will keep accessing the same indicies in memory and eventually learn the behavior for a specific global
+  access pattern.
 </p>
 <p>
-  Some obvious downsides is that say that a within a working set of branch instructions we may have multiple version of this branch in memory (potentially and pathlogically taking up the entire table).
-  So Gshare doesn't scale well at all high complexity randomized global branch histories.
+  Some obvious downsides is that say that a within a working set of branch instructions if the branch history is very random, we will take up more space within the table potentially evicting
+  other branches that might be accurate predictors. So Gshare doesn't scale well at all high complexity randomized global branch histories.
 </p>
 <img src="xor_bht.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
-  I would like to introduce a scheme that I had thought of that aims to achieve a very high density in memory regardless of the complexity of the global branch history. A way to do this would be to
-  consider a BHT which stores the local history of a certain branch. We look up said pattern in a PHT which has a 2 bit counter we use for prediction.
+  The next predictor I would like to talk about is a Yeh and Patt two-level predictor that aims to achieve a higher efficency in memory but still struggles from a worse a similar worse worst case
+  performance than Gshare.
+  A way to do this would be to
+  consider a branch history table which stores the local history of a certain branch. To find a prediction use that pattern to index into a pattern history table which points to a 2 bit counter which
+  will provide us with a prediction.
 </p>
+<img src="yeh_patt_large.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
-  The performance of my branch prediction scheme on the BOOM machine:
+  Performance of a Yeh and Patt prediction scheme on the BOOM machine:
 </p>
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">    Benchmark   mcycle    minstret  IPC     Mispredicted/Total   Accuracy
     dhrystone   156992    186031    1.185   1599/36591            95.63%
@@ -254,7 +259,7 @@ Notice that near by branches inform us about other branches, branch instructions
     vvadd       1349      2416      1.791   71/3935               98.20%
 </code></pre>
 <p>
-  The performance of TAGE scheme on the BOOM machine:
+  The performance of the TAGE scheme on the BOOM machine:
 </p>
 <pre><code style="font-family: monospace; background: #f4f4f4; display: block; padding: 12px; border-radius: 4px;">    Benchmark   mcycle    minstret  IPC     Mispredicted/Total   Accuracy
     dhrystone   116467    186031    1.597   83/36878              99.77%
@@ -265,6 +270,26 @@ Notice that near by branches inform us about other branches, branch instructions
     towers      3483      3782      1.086   126/3287              96.17%
     vvadd       1344      2416      1.798   53/3992               98.67%
 </code></pre>
+
+<p>
+  Notice for small enough table size we can start sharing patterns. It uses the premise that if two branch instructions have the same branch pattern then it must be that they
+  are doing similar things for large enough n where n is the length of the local branch history. This lets us have higher efficiency per bit in the predictor for small enough sizes of the branch
+  predictor!
+</p>
+
+<p>
+  I mentioned TAGE. TAGE we can think about is an adaptive form of the Gshare scheme which performs quite well in practice. TAGE simply creates m gshare tables where their associated
+  GBHR sizes are geometrically
+  distributed. If a resident in a lower rank table keeps giving miss predictions, it gets moved up to a table with a larger GHBR.
+</p>
+<p>
+  The intuition is if a certain branch performs badly in GShare, in TAGE this branch instruction
+  would get provided more context, in the form a larger GBHR, and be moved to another table to avoid evicting perfectly fine branches. TAGE is considered state of the art and it is surpising to see how
+  a much simpler scheme like Yeh and Patt can sort of get close in terms of performance without even considering spatial correlations.
+</p>
+<p>
+  That was basically all I wanted to talk about hope you found it interesting!
+</p>
 
 </body>
 </html>
