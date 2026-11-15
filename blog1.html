@@ -239,11 +239,13 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 <img src="xor_bht.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
-  The next predictor I would like to talk about is a Yeh and Patt two-level predictor that aims to achieve a higher efficency in memory but still struggles from a worse a similar worse worst case
-  performance than Gshare.
+  The next predictor I would like to talk about is a Yeh and Patt two-level predictor that aims to achieve a higher efficency in memory.
   A way to do this would be to
   consider a branch history table which stores the local history of a certain branch. To find a prediction use that pattern to index into a pattern history table which points to a 2 bit counter which
   will provide us with a prediction.
+</p>
+<p>
+  Notice this still struggles from a similar worst case performance to that of GShare but has some interesting properties. But first here are some performance benchmarks.
 </p>
 <img src="yeh_patt_large.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
@@ -272,11 +274,10 @@ Notice that near by branches inform us about other branches, branch instructions
 </code></pre>
 
 <p>
-  Notice for small enough table size we can start sharing patterns. It uses the premise that if two branch instructions have the same branch pattern then it must be that they
-  are doing similar things for large enough n where n is the length of the local branch history. This lets us have higher efficiency per bit in the predictor for small enough sizes of the branch
-  predictor!
+  Notice for small enough table size we can start sharing patterns. If two branch instructions have the same local branch pattern and if the local branch pattern is large enough we can reasonably say
+  these two branches are strongly coorelated and we should share the same predictor. This lets us have higher efficiency per bit in the predictor for small enough sizes of the branch
+  predictor and long enough local branch histories.
 </p>
-
 <p>
   I mentioned TAGE. TAGE we can think about is an adaptive form of the Gshare scheme which performs quite well in practice. TAGE simply creates m gshare tables where their associated
   GBHR sizes are geometrically
@@ -288,7 +289,7 @@ Notice that near by branches inform us about other branches, branch instructions
   a much simpler scheme like Yeh and Patt can sort of get close in terms of performance without even considering spatial correlations.
 </p>
 <p>
-  That was basically all I wanted to talk about hope you found it interesting!
+  That was basically all I wanted to talk about! Hope you found it interesting!
 </p>
 
 </body>
