@@ -224,7 +224,7 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 
 <p>
-  With all of this said lets begin with some pretty good simple branch predictor: Gshare. Gshare is simple, simply have a table of 2-bit counters, indexed by $\textbf{BranchIP} \xor \textbf{GBHR}$.
+  With all of this said lets begin with some pretty good simple branch predictor: Gshare. Gshare is simple, simply have a table of 2-bit counters, indexed by $\text{BranchIP} \oplus \text{GBHR}$.
 </p>
 <p>
   Why might this be a good idea? Well by having 2 bit counter we can avoid simple pathlogical branch patterns and ensure that we can learn the local histories of certain branches and predict using i
