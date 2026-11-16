@@ -228,10 +228,12 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 <p>
   Why might this be a good idea? Well by having 2 bit counter we can avoid simple pathlogical branch patterns and ensure that we can learn the local histories of certain branches.
-  By performing an XOR with te global branch history register we take into account spatial relationship among branches.
-  Take for example
-  if global pattern history where to not change, we will keep accessing the same indicies in memory and eventually learn the behavior for a specific global
-  access pattern.
+  By performing an XOR with the global branch history register we take into account spatial relationship among branches. Take for example the same working set of branch instructions and two repeating
+  global pattern histories like the one we saw earlier. We can imagine each global pattern as being a key which decides which indicies within the table we are allowed to use for our predictions.
+</p>
+<p>
+  This scheme still allows for learning because if global pattern history where to not change, we will keep accessing the same indicies in our table and eventually learn the behavior of a certain working
+  set.
 </p>
 <p>
   Some obvious downsides is that say that a within a working set of branch instructions if the branch history is very random, we will take up more space within the table potentially evicting
