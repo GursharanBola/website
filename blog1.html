@@ -246,7 +246,16 @@ Notice that near by branches inform us about other branches, branch instructions
 </p>
 <img src="yeh_patt_large.svg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
 <p>
-  Notice this still struggles from a similar worst case performance to that of GShare but has some interesting properties. But first here are some performance benchmarks.
+  Notice for small enough table size we can start sharing patterns. If two branch instructions have the same local branch pattern and if the local branch pattern is large enough we can reasonably say
+  these two branches are strongly coorelated and we should share the same predictor. This lets us have higher efficiency per bit in the predictor for small enough sizes of the branch
+  predictor and long enough local branch histories.
+</p>
+<p>
+  This scheme still struggles from a similar worst case performance to that of GShare. If local branch histories change a lot then we may eventually end up overwriting perfectly fine predictions
+  in our pattern history table.
+<p>
+  Despite this lets look at some data on how this scheme performs compared to a state of the art approach called TAGE.
+</p>
 </p>
 <p>
   Performance of a Yeh and Patt prediction scheme on the BOOM machine:
@@ -272,21 +281,16 @@ Notice that near by branches inform us about other branches, branch instructions
     towers      3483      3782      1.086   126/3287              96.17%
     vvadd       1344      2416      1.798   53/3992               98.67%
 </code></pre>
-
 <p>
-  Notice for small enough table size we can start sharing patterns. If two branch instructions have the same local branch pattern and if the local branch pattern is large enough we can reasonably say
-  these two branches are strongly coorelated and we should share the same predictor. This lets us have higher efficiency per bit in the predictor for small enough sizes of the branch
-  predictor and long enough local branch histories.
-</p>
-<p>
-  I mentioned TAGE. TAGE we can think about is an adaptive form of the Gshare scheme which performs quite well in practice. TAGE simply creates m gshare tables where their associated
+  TAGE we can think about is an adaptive form of the Gshare scheme which performs quite well in practice. TAGE simply creates m gshare tables where their associated
   GBHR sizes are geometrically
   distributed. If a resident in a lower rank table keeps giving miss predictions, it gets moved up to a table with a larger GHBR.
 </p>
 <p>
   The intuition is if a certain branch performs badly in GShare, in TAGE this branch instruction
-  would get provided more context in the form a larger GBHR, and be moved to another table to avoid evicting perfectly fine branches. TAGE is considered state of the art but it is surpising to see how
-  a much simpler scheme like Yeh and Patt can sort of get close in terms of performance without even considering spatial correlations.
+  would get provided more context in the form a larger GBHR, and be moved to another table to avoid evicting perfectly fine branches. Even though TAGE is considered state of the art, it is surpising to
+  see how
+  a much simpler scheme like Yeh and Patt can get close in terms of performance without even considering spatial correlations.
 </p>
 <p>
   That was basically all I wanted to talk about! Hope you found it interesting!
